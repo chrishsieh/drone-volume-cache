@@ -94,20 +94,6 @@ elif [[ -n "$PLUGIN_RESTORE" && "$PLUGIN_RESTORE" == "true" ]]; then
             echo "No cache for $source"
         fi
     done
-elif [[ -n "$PLUGIN_INIT" && "$PLUGIN_INIT" == "true" ]]; then
-    # Restore from cache
-    for source in ${SOURCES[@]}; do
-        if [ -d "./$source" ]; then
-            echo "Check folder $source..."
-            mkdir -p "/cache/$CACHE_PATH/$source"
-        elif [ -f "./$source" ]; then
-            echo "Check file $source..."
-            source_dir=$(dirname "/cache/$CACHE_PATH/$source")
-            mkdir -p "$source_dir"
-        else
-            echo "Init $source fail"
-        fi
-    done
 else
     echo "No restore or rebuild flag specified, plugin won't do anything!"
 fi
