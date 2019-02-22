@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -x
 
 if [ -z "$PLUGIN_MOUNT" ]; then
     echo "Specify folders to cache in the mount property! Plugin won't do anything!"
@@ -9,6 +10,10 @@ fi
 if [[ $DRONE_COMMIT_MESSAGE == *"[NO CACHE]"* ]]; then
     echo "Found [NO CACHE] in commit message, skipping cache restore and rebuild!"
     exit 0
+fi
+
+if [ -z "$DRONE_JOB_NUMBER"]; then
+    DRONE_JOB_NUMBER=$DRONE_BUILD_NUMBER
 fi
 
 CACHE_PATH="$DRONE_REPO_OWNER/$DRONE_REPO_NAME/$DRONE_JOB_NUMBER"
