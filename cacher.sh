@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -x
 
 if [ -z "$PLUGIN_MOUNT" ]; then
     echo "Specify folders to cache in the mount property! Plugin won't do anything!"
@@ -42,7 +43,7 @@ fi
 IFS=','; read -ra SOURCES <<< "$PLUGIN_MOUNT"
 if [[ -n "$PLUGIN_REBUILD" && "$PLUGIN_REBUILD" == "true" ]]; then
     # Create cache
-    for source in "${SOURCES[@]}"; do
+    for source in ${SOURCES[@]}; do
         if [ -d "$source" ]; then
             echo "Rebuilding cache for folder $source..."
             mkdir -p "/cache/$CACHE_PATH/$source" && \
@@ -79,7 +80,7 @@ elif [[ -n "$PLUGIN_RESTORE" && "$PLUGIN_RESTORE" == "true" ]]; then
         fi
     fi
     # Restore from cache
-    for source in "${SOURCES[@]}"; do
+    for source in ${SOURCES[@]}; do
         if [ -d "/cache/$CACHE_PATH/$source" ]; then
             echo "Restoring cache for folder $source..."
             mkdir -p "$source" && \
@@ -91,6 +92,20 @@ elif [[ -n "$PLUGIN_RESTORE" && "$PLUGIN_RESTORE" == "true" ]]; then
                 rsync -aHA --delete "/cache/$CACHE_PATH/$source" "$source_dir/"
         else
             echo "No cache for $source"
+        fi
+    done
+elif [[ -n "$PLUGIN_INIT" && "$PLUGIN_INIT" == "true" ]]; then
+    # Restore from cache
+    for source in ${SOURCES[@]}; do
+        if [ -d "./$source" ]; then
+            echo "Check folder $source..."
+            mkdir -p "/cache/$CACHE_PATH/$source"
+        elif [ -f "./$source" ]; then
+            echo "Check file $source..."
+            source_dir=$(dirname "/cache/$CACHE_PATH/$source")
+            mkdir -p "$source_dir"
+        else
+            echo "Init $source fail"
         fi
     done
 else
