@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
-set -x
 
 if [ -z "$PLUGIN_MOUNT" ]; then
     echo "Specify folders to cache in the mount property! Plugin won't do anything!"
